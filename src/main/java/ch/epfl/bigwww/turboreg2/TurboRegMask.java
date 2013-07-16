@@ -26,7 +26,7 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 
 /**
- * @author Phillipe Thevenaz
+ * @author Philippe Thevenaz
  * @author Lee Kamentsky
  *
  */

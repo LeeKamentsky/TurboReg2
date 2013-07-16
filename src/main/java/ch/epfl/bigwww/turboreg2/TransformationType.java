@@ -4,6 +4,7 @@
 package ch.epfl.bigwww.turboreg2;
 
 /**
+ * @author Philippe Thevenaz
  * @author Lee Kamentsky
  * 
  * The transformation models supported by TurboReg

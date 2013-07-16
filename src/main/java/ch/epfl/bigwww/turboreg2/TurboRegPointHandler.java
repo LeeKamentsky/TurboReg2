@@ -11,7 +11,7 @@ import net.imglib2.Point;
 import net.imglib2.RealPoint;
 
 /*********************************************************************
- * @author Phillipe Thevenaz
+ * @author Philippe Thevenaz
  * @author Lee Kamentsky
  * 
  * This class implements the graphic interactions when dealing with

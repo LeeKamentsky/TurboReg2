@@ -33,7 +33,7 @@ import imagej.plugin.PluginException;
 import imagej.ui.UIService;
 
 /**
- * @author Phillipe Thevenaz
+ * @author Philippe Thevenaz
  * @author Lee Kamentsky
  * 
  * Adapted from the TurboReg ImageJ plugin by

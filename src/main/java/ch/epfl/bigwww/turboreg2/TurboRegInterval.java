@@ -21,7 +21,7 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 
 /**
- * @author Phillipe Thevenaz
+ * @author Philippe Thevenaz
  * @author Lee Kamentsky
  *
  * The TurboRegInterval acts as a common base class for

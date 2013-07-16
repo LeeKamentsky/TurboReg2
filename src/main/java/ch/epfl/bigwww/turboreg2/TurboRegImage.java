@@ -8,7 +8,7 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 
 /*********************************************************************
- * @author Phillipe Thevenaz
+ * @author Philippe Thevenaz
  * @author Lee Kamentsky
  * This class is responsible for the image preprocessing that takes
  * place concurrently with user-interface events. It contains methods

@@ -34,7 +34,7 @@ import imagej.plugin.PluginException;
 
 
 /**
- * @author Phillipe Thevenaz
+ * @author Philippe Thevenaz
  * @author Lee Kamentsky
  *
  * The <code>TurboRegApply</code> command applies a

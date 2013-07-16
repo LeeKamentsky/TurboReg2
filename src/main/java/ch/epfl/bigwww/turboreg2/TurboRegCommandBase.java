@@ -15,7 +15,7 @@ import imagej.display.Display;
 import imagej.display.DisplayService;
 
 /**
- * @author Phillipe Thevenaz
+ * @author Philippe Thevenaz
  * @author Lee Kamentsky
  *
  * Shared support structure for TurboReg command plugins.
