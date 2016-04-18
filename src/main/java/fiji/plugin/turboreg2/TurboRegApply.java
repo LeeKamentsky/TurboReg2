@@ -59,7 +59,7 @@ public class TurboRegApply extends TurboRegCommandBase {
     @Parameter(label = "Fast mode", type = ItemIO.INPUT,
             description = "Check this box to transform the image quickly, but without sub-pixel interpolation\n"
             + "Uncheck the box to produce a better image, but more slowly")
-    private final boolean accelerated = false;
+    private boolean accelerated = false;
 
     @Parameter(label = "All stack frames", type = ItemIO.INPUT,
             description = "Check this to transform all frames in a stack similarly, leave unchecked to only transform the selected frame")
@@ -179,7 +179,7 @@ public class TurboRegApply extends TurboRegCommandBase {
                     img.setExecutionContext(TurboRegApply.this);
                 }
                 /*
-				 * Copy the source data to a buffer.
+		 * Copy the source data to a buffer.
                  */
                 float[] srcBuffer = new float[(int) (width * height)];
                 ImgPlus<FloatType> srcImgPlus = ImgPlus.wrap(ArrayImgs.floats(srcBuffer, width, height));
@@ -201,12 +201,14 @@ public class TurboRegApply extends TurboRegCommandBase {
                 final TurboRegPointHandler targetPh = new TurboRegPointHandler(
                         transformation, getResultsTable(), targetImg);
                 sourceImgDone.get();
+                
                 TurboRegTransform tt = new TurboRegTransform(
                         sourceImg, null, sourcePh, targetImg, null, targetPh,
                         transformation, accelerated, false, statusService);
                 tt.doBatchFinalTransform();
+                
                 /*
-				 * Copy the target to the plane.
+		 * Copy the target to the plane.
                  */
                 float channelMinimum = (float) ((channel == null) ? 0 : dsView.getChannelMin(channel));
                 float channelMaximum = (float) ((channel == null) ? 255.0 : dsView.getChannelMax(channel));

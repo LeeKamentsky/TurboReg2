@@ -127,6 +127,7 @@ public class TurboRegRegister extends TurboRegCommandBase {
             TurboRegTransform tt = new TurboRegTransform(
                     sourceImg, sourceMask, sourcePh, targetImg, targetMask, targetPh,
                     transformation, true, false, statusService);
+            tt.setLogService(log);
             tt.doRegistration();
             
             if (alignment == null) {
@@ -168,6 +169,7 @@ public class TurboRegRegister extends TurboRegCommandBase {
         final TurboRegImage sourceImg = new TurboRegImage();
         sourceImg.setTransformation(transformationType);
         sourceImg.setStatusService(statusService);
+        sourceImg.setLogService(log);
         sourceImg.setPyramidDepth(pyramidDepth);
         sourceImg.setExecutionContext(this);
         sourceImg.setData(TurboRegInterval.getImageDisplayPlane(isTarget ? target : source, overlayService), isTarget);
@@ -186,6 +188,7 @@ public class TurboRegRegister extends TurboRegCommandBase {
         final TurboRegMask mask = new TurboRegMask();
         mask.setExecutionContext(this);
         mask.setStatusService(statusService);
+        mask.setLogService(log);
         mask.setPyramidDepth(pyramidDepth);
         mask.setData(display, overlayService);
         return mask;

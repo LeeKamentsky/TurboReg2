@@ -13,6 +13,7 @@ import org.scijava.app.StatusService;
 import net.imagej.ImgPlus;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.type.numeric.real.FloatType;
+import org.scijava.log.LogService;
 
 /**
  * @author Philippe Thevenaz
@@ -22,8 +23,7 @@ import net.imglib2.type.numeric.real.FloatType;
 /**
  * *******************************************************************
  * This class implements the algorithmic methods of the plugin. It refines the landmarks and
- * computes the final images.
- *******************************************************************
+ * computes the final images. ******************************************************************
  */
 class TurboRegTransform {
 
@@ -32,7 +32,6 @@ class TurboRegTransform {
  /*....................................................................
 	Private variables
 ....................................................................*/
-
     /**
      * *******************************************************************
      * Maximal number of registration iterations per level, when speed is requested at the expense
@@ -40,21 +39,21 @@ class TurboRegTransform {
      * levels of the pyramid than at the fine levels.
      *
      * @see turboRegTransform#ITERATION_PROGRESSION
-	 *******************************************************************
+     * ******************************************************************
      */
     private static final int FEW_ITERATIONS = 5;
 
     /**
      * *******************************************************************
      * Initial value of the Marquardt-Levenberg fudge factor.
-	 *******************************************************************
+     * ******************************************************************
      */
     private static final double FIRST_LAMBDA = 1.0;
 
     /**
      * *******************************************************************
      * Update parameter of the Marquardt-Levenberg fudge factor.
-	 *******************************************************************
+     * ******************************************************************
      */
     private static final double LAMBDA_MAGSTEP = 4.0;
 
@@ -65,7 +64,7 @@ class TurboRegTransform {
      * coarse levels of the pyramid than at the fine levels.
      *
      * @see turboRegTransform#ITERATION_PROGRESSION
-	 *******************************************************************
+     * ******************************************************************
      */
     private static final int MANY_ITERATIONS = 10;
 
@@ -73,7 +72,7 @@ class TurboRegTransform {
      * *******************************************************************
      * Minimal update distance of the landmarks, in pixel units, when accuracy is requested at the
      * expense of speed. This distance does not depend on the pyramid level.
-	 *******************************************************************
+     * ******************************************************************
      */
     private static final double PIXEL_HIGH_PRECISION = 0.001;
 
@@ -81,19 +80,19 @@ class TurboRegTransform {
      * *******************************************************************
      * Minimal update distance of the landmarks, in pixel units, when speed is requested at the
      * expense of accuracy. This distance does not depend on the pyramid level.
-	 *******************************************************************
+     * ******************************************************************
      */
     private static final double PIXEL_LOW_PRECISION = 0.1;
 
     /**
      * *******************************************************************
      * Multiplicative factor that determines how many more iterations are allowed for a pyramid
-     * level one unit coarser.
-	 *******************************************************************
+     * level one unit coarser. ******************************************************************
      */
     private static final int ITERATION_PROGRESSION = 2;
 
     private StatusService statusService;
+    private LogService log;
     private int workload;
     private int progress;
     private final double[] dxWeight = new double[4];
@@ -154,16 +153,21 @@ class TurboRegTransform {
     private boolean accelerated;
     private final boolean interactive;
 
-    /*....................................................................
-	Public methods
-....................................................................*/
-    /**
+    /*
+     * Public methods
+     */
+    
+    /*
      * Tell <code>TurboRegTransform</code> about the status service to use when reporting progress.
      *
      * @param statusService
      */
     public void setStatusService(StatusService statusService) {
         this.statusService = statusService;
+    }
+
+    public void setLogService(LogService log) {
+        this.log = log;
     }
 
     /**
@@ -173,7 +177,7 @@ class TurboRegTransform {
      * @param pathAndFilename Path and name of the file where batch results are being written.
      * @throws IOException
      * @see turboRegDialog#loadLandmarks()
-	 *******************************************************************
+     * ******************************************************************
      */
     public void appendTransformation(
             final String pathAndFilename
@@ -230,11 +234,8 @@ class TurboRegTransform {
     }
 
     /* end appendTransformation */
-
     /**
-     * *******************************************************************
      * Compute the final image.
-	 *******************************************************************
      */
     public void doBatchFinalTransform() {
         if (accelerated) {
@@ -269,7 +270,6 @@ class TurboRegTransform {
     }
 
     /* end doBatchFinalTransform */
-
     /**
      * @author Lee Kamentsky
      *
@@ -305,8 +305,7 @@ class TurboRegTransform {
 
     /**
      * *******************************************************************
-     * Compute the final image.
-	 *******************************************************************
+     * Compute the final image. ******************************************************************
      */
     public ImageAndMask doFinalTransform() {
         if (accelerated) {
@@ -342,11 +341,9 @@ class TurboRegTransform {
     }
 
     /* end doFinalTransform */
-
     /**
      * *******************************************************************
-     * Compute the final image.
-	 *******************************************************************
+     * Compute the final image. ******************************************************************
      */
     public void doFinalTransform(
             final TurboRegImage sourceImg,
@@ -396,11 +393,9 @@ class TurboRegTransform {
     }
 
     /* end doFinalTransform */
-
     /**
      * *******************************************************************
-     * Refine the landmarks.
-	 *******************************************************************
+     * Refine the landmarks. ******************************************************************
      */
     public void doRegistration() {
         Stack sourceImgPyramid;
@@ -562,7 +557,6 @@ class TurboRegTransform {
     }
 
     /* end doRegistration */
-
     /**
      * *******************************************************************
      * Keep a local copy of most everything. Select among the pre-stored constants.
@@ -576,7 +570,7 @@ class TurboRegTransform {
      * @param transformation Transformation code.
      * @param accelerated Trade-off between speed and accuracy.
      * @param interactive Shows or hides the resulting image.
-	 *******************************************************************
+     * ******************************************************************
      */
     public TurboRegTransform(
             final TurboRegImage sourceImg,
@@ -3413,7 +3407,6 @@ class TurboRegTransform {
     }
 
     /* yWeights */
-
     /**
      * Add a workload for the status bar
      *
@@ -3425,6 +3418,9 @@ class TurboRegTransform {
         this.progress = 0;
         if (statusService != null) {
             statusService.showStatus(0, workload, message);
+        }
+        if (log != null) {
+            log.info(message);
         }
     }
 
