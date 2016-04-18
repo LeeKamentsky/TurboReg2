@@ -1,5 +1,6 @@
 package fiji.plugin.turboreg2;
 
+import net.imagej.DatasetService;
 import net.imagej.ImageJ;
 import org.scijava.ItemIO;
 import org.scijava.app.StatusService;
@@ -31,6 +32,8 @@ abstract class TurboRegCommandBase extends ContextCommand {
     protected LogService logService;
     @Parameter
     DisplayService displayService;
+    @Parameter
+    protected DatasetService datasetService;
 
     @Parameter(type = ItemIO.INPUT, label = "Transform", choices = {
         "Translation", "Rigid body", "Scaled rotation", "Affine",

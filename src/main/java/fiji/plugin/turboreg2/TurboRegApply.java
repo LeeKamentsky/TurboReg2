@@ -90,7 +90,7 @@ public class TurboRegApply extends TurboRegCommandBase {
             }
             for (int i = 0; i < nPlanes; i++) {
                 /*
-				 * Increment plane # with carryover.
+		 * Increment plane # with carryover.
                  */
                 for (int j = 0; j < plane.length; j++) {
                     if (++plane[j] == display.dimension(j + 2)) {
@@ -175,6 +175,7 @@ public class TurboRegApply extends TurboRegCommandBase {
                 for (TurboRegImage img : new TurboRegImage[]{sourceImg, targetImg}) {
                     img.setTransformation(transformation);
                     img.setStatusService(statusService);
+                    img.setLogService(logService);
                     img.setPyramidDepth(pyramidDepth);
                     img.setExecutionContext(TurboRegApply.this);
                 }
@@ -201,12 +202,12 @@ public class TurboRegApply extends TurboRegCommandBase {
                 final TurboRegPointHandler targetPh = new TurboRegPointHandler(
                         transformation, getResultsTable(), targetImg);
                 sourceImgDone.get();
-                
+
                 TurboRegTransform tt = new TurboRegTransform(
                         sourceImg, null, sourcePh, targetImg, null, targetPh,
                         transformation, accelerated, false, statusService);
                 tt.doBatchFinalTransform();
-                
+
                 /*
 		 * Copy the target to the plane.
                  */
