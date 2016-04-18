@@ -43,9 +43,6 @@ public class TurboRegRegister extends TurboRegCommandBase {
     @Parameter
     OverlayService overlayService;
 
-    @Parameter
-    LogService log;
-
     @Parameter(type = ItemIO.INPUT, label = "Source",
             description = "Use this display as a reference for aligning the target image.",
             required = true)
@@ -127,7 +124,7 @@ public class TurboRegRegister extends TurboRegCommandBase {
             TurboRegTransform tt = new TurboRegTransform(
                     sourceImg, sourceMask, sourcePh, targetImg, targetMask, targetPh,
                     transformation, true, false, statusService);
-            tt.setLogService(log);
+            tt.setLogService(logService);
             tt.doRegistration();
             
             if (alignment == null) {
@@ -169,7 +166,7 @@ public class TurboRegRegister extends TurboRegCommandBase {
         final TurboRegImage sourceImg = new TurboRegImage();
         sourceImg.setTransformation(transformationType);
         sourceImg.setStatusService(statusService);
-        sourceImg.setLogService(log);
+        sourceImg.setLogService(logService);
         sourceImg.setPyramidDepth(pyramidDepth);
         sourceImg.setExecutionContext(this);
         sourceImg.setData(TurboRegInterval.getImageDisplayPlane(isTarget ? target : source, overlayService), isTarget);
@@ -188,7 +185,7 @@ public class TurboRegRegister extends TurboRegCommandBase {
         final TurboRegMask mask = new TurboRegMask();
         mask.setExecutionContext(this);
         mask.setStatusService(statusService);
-        mask.setLogService(log);
+        mask.setLogService(logService);
         mask.setPyramidDepth(pyramidDepth);
         mask.setData(display, overlayService);
         return mask;
