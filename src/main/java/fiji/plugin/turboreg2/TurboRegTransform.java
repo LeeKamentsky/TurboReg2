@@ -90,8 +90,8 @@ class TurboRegTransform
 	private final int[] yIndex = new int[4];
 	private TurboRegImage sourceImg;
 	private TurboRegImage targetImg;
-	private TurboRegMask sourceMsk;
-	private TurboRegMask targetMsk;
+	private final TurboRegMask sourceMsk;
+	private final TurboRegMask targetMsk;
 	private TurboRegPointHandler sourcePh;
 	private TurboRegPointHandler targetPh;
 	private double[][] sourcePoint;
@@ -123,8 +123,8 @@ class TurboRegTransform
 	private double c3u;
 	private double c3v;
 	private double c3uv;
-	private double pixelPrecision;
-	private int maxIterations;
+	private final double pixelPrecision;
+	private final int maxIterations;
 	private int p;
 	private int q;
 	private int inNx;
@@ -138,7 +138,7 @@ class TurboRegTransform
 	private int iterationPower;
 	private int iterationCost;
 	private boolean accelerated;
-	private boolean interactive;
+	private final boolean interactive;
 
 	/*....................................................................
 	Public methods
@@ -170,48 +170,48 @@ are being written.
 		if (pathAndFilename == null) {
 			return;
 		}
-		final FileWriter fw = new FileWriter(pathAndFilename, true);
-		fw.write("\n");
-		switch (transformation) {
-		case TRANSLATION: {
-			fw.write("TRANSLATION\n");
-			break;
-		}
-		case RIGID_BODY: {
-			fw.write("RIGID_BODY\n");
-			break;
-		}
-		case SCALED_ROTATION: {
-			fw.write("SCALED_ROTATION\n");
-			break;
-		}
-		case AFFINE: {
-			fw.write("AFFINE\n");
-			break;
-		}
-		case BILINEAR: {
-			fw.write("BILINEAR\n");
-			break;
-		}
-		}
-		fw.write("\n");
-		fw.write("Source size\n");
-		fw.write(inNx + "\t" + inNy + "\n");
-		fw.write("\n");
-		fw.write("Target size\n");
-		fw.write(outNx + "\t" + outNy + "\n");
-		fw.write("\n");
-		fw.write("Refined source landmarks\n");
-		int nPoints = TurboRegPointHandler.pointCount(transformation);
-		for (int i = 0; (i < nPoints); i++) {
-			fw.write(sourcePoint[i][0] + "\t" + sourcePoint[i][1] + "\n");
-		}
-		fw.write("\n");
-		fw.write("Target landmarks\n");
-		for (int i = 0; (i < nPoints); i++) {
-			fw.write(targetPoint[i][0] + "\t" + targetPoint[i][1] + "\n");
-		}
-		fw.close();
+            try (FileWriter fw = new FileWriter(pathAndFilename, true)) {
+                fw.write("\n");
+                switch (transformation) {
+                    case TRANSLATION: {
+                        fw.write("TRANSLATION\n");
+                        break;
+                    }
+                    case RIGID_BODY: {
+                        fw.write("RIGID_BODY\n");
+                        break;
+                    }
+                    case SCALED_ROTATION: {
+                        fw.write("SCALED_ROTATION\n");
+                        break;
+                    }
+                    case AFFINE: {
+                        fw.write("AFFINE\n");
+                        break;
+                    }
+                    case BILINEAR: {
+                        fw.write("BILINEAR\n");
+                        break;
+                    }
+                }
+                fw.write("\n");
+                fw.write("Source size\n");
+                fw.write(inNx + "\t" + inNy + "\n");
+                fw.write("\n");
+                fw.write("Target size\n");
+                fw.write(outNx + "\t" + outNy + "\n");
+                fw.write("\n");
+                fw.write("Refined source landmarks\n");
+                int nPoints = TurboRegPointHandler.pointCount(transformation);
+                for (int i = 0; (i < nPoints); i++) {
+                    fw.write(sourcePoint[i][0] + "\t" + sourcePoint[i][1] + "\n");
+                }
+                fw.write("\n");
+                fw.write("Target landmarks\n");
+                for (int i = 0; (i < nPoints); i++) {
+                    fw.write(targetPoint[i][0] + "\t" + targetPoint[i][1] + "\n");
+                }
+            }
 	} /* end appendTransformation */
 
 	/*********************************************************************
@@ -413,18 +413,18 @@ Refine the landmarks.
 				else {
 					inMsk = (float[])sourceMskPyramid.pop();
 				}
-				outNx = ((Integer)targetImgPyramid.pop()).intValue();
-				outNy = ((Integer)targetImgPyramid.pop()).intValue();
+				outNx = ((Integer)targetImgPyramid.pop());
+				outNy = ((Integer)targetImgPyramid.pop());
 				outImg = (float[])targetImgPyramid.pop();
 				outMsk = (float[])targetMskPyramid.pop();
 			}
 			else {
-				inNx = ((Integer)targetImgPyramid.pop()).intValue();
-				inNy = ((Integer)targetImgPyramid.pop()).intValue();
+				inNx = ((Integer)targetImgPyramid.pop());
+				inNy = ((Integer)targetImgPyramid.pop());
 				inImg = (float[])targetImgPyramid.pop();
 				inMsk = (float[])targetMskPyramid.pop();
-				outNx = ((Integer)sourceImgPyramid.pop()).intValue();
-				outNy = ((Integer)sourceImgPyramid.pop()).intValue();
+				outNx = ((Integer)sourceImgPyramid.pop());
+				outNy = ((Integer)sourceImgPyramid.pop());
 				outImg = (float[])sourceImgPyramid.pop();
 				xGradient = (float[])sourceImgPyramid.pop();
 				yGradient = (float[])sourceImgPyramid.pop();

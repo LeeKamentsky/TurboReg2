@@ -18,7 +18,7 @@ import net.imglib2.RealPoint;
  * TODO: Implement ImageJ 2.0 drawing
  * ******************************************************************
  */
-class TurboRegPointHandler {
+final class TurboRegPointHandler {
 
     /* begin class turboRegPointHandler */
 
@@ -581,7 +581,7 @@ class TurboRegPointHandler {
             setTransformation(transformation);
             return;
         }
-        HashMap<String, DoubleColumn> columnMap = new HashMap<String, DoubleColumn>();
+        HashMap<String, DoubleColumn> columnMap = new HashMap<>();
         for (int i = 0; i < resultsTable.getColumnCount(); i++) {
             columnMap.put(resultsTable.getColumnHeader(i), resultsTable.get(i));
         }

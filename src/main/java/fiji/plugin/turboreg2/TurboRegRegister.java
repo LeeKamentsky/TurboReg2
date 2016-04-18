@@ -123,16 +123,20 @@ public class TurboRegRegister extends TurboRegCommandBase {
                     transformation, getResultsTable(), sourceImg);
             final TurboRegPointHandler targetPh = new TurboRegPointHandler(
                     transformation, getResultsTable(), targetImg);
+            
             TurboRegTransform tt = new TurboRegTransform(
                     sourceImg, sourceMask, sourcePh, targetImg, targetMask, targetPh,
                     transformation, true, false, statusService);
             tt.doRegistration();
+            
             if (alignment == null) {
                 createResultsTable();
             }
+            
             sourcePh.getResults(getResultsTable());
             targetPh.getResults(getResultsTable());
             alignment.update();
+            
             if (addLandmarks) {
                 TurboRegPointHandler[] ph = {sourcePh, targetPh};
                 ImageDisplay[] dsp = {source, target};
