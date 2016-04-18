@@ -1,4 +1,4 @@
-package ch.epfl.bigwww.turboreg2;
+package fiji.plugin.turboreg2;
 
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;

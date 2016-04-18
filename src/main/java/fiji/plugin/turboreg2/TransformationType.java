@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ch.epfl.bigwww.turboreg2;
+package fiji.plugin.turboreg2;
 
 /**
  * @author Philippe Thevenaz

@@ -4,12 +4,12 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
-    <groupId>ch.epfl.bigwww</groupId>
+    <groupId>fiji.plugin</groupId>
     <artifactId>TurboReg2</artifactId>
     
     <name>TurboReg2</name>
     <description>An adaptation of the ImageJ 1 TurboReg plugin to ImageJ 2</description>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.1.0-SNAPSHOT</version>
     
     <parent>
         <groupId>sc.fiji</groupId>
