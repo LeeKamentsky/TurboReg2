@@ -3,14 +3,14 @@
  */
 package ch.epfl.bigwww.turboreg2;
 
-import imagej.Cancelable;
-import imagej.data.Dataset;
-import imagej.data.display.DataView;
-import imagej.data.display.DatasetView;
-import imagej.data.display.ImageDisplay;
-import imagej.data.display.OverlayService;
-import imagej.plugin.PluginException;
-import imagej.util.RealRect;
+import org.scijava.Cancelable;
+import net.imagej.Dataset;
+import net.imagej.display.DataView;
+import net.imagej.display.DatasetView;
+import net.imagej.display.ImageDisplay;
+import net.imagej.display.OverlayService;
+import org.scijava.module.ModuleException;
+import org.scijava.util.RealRect;
 
 import java.util.Stack;
 
@@ -223,10 +223,10 @@ class TurboRegInterval<PYRAMID_TYPE> {
 	 * given the source and target image dimensions
 	 *  
 	 * @return
-	 * @throws PluginException 
+	 * @throws ModuleException 
 	 */
 	static int getPyramidDepth(ImageDisplay source, ImageDisplay target, OverlayService overlayService)
-			throws PluginException {
+			throws ModuleException {
 		long sw, sh, tw, th;
 		if (overlayService != null) {
 			final RealRect rSource = overlayService.getSelectionBounds(source);
@@ -260,15 +260,15 @@ class TurboRegInterval<PYRAMID_TYPE> {
 	 * 
 	 * @param display an image display
 	 * @return the selected plane in the image display as a RandomAccesibleInterval
-	 * @throws PluginException
+	 * @throws ModuleException
 	 */
 	static RandomAccessibleInterval<? extends RealType<?>> getImageDisplayPlane(
 			ImageDisplay display,
 			OverlayService overlayService)
-			throws PluginException {
+			throws ModuleException {
 		DataView view = display.getActiveView();
 		if ((view == null) || !(view instanceof DatasetView)) {
-			throw new PluginException("The display doesn't have an active dataset (image)");
+			throw new ModuleException("The display doesn't have an active dataset (image)");
 		}
 		DatasetView dsView = (DatasetView)view;
 		Dataset ds = dsView.getData();
@@ -285,15 +285,15 @@ class TurboRegInterval<PYRAMID_TYPE> {
 	 * @param data the RandomAccessibleInterval to be projected
 	 * @param overlayService the overlay service (which we use to do some overlay math)
 	 * @return the projected RandomAccessibleInterval (a 2-d plane)
-	 * @throws PluginException if no active view
+	 * @throws ModuleException if no active view
 	 */
 	static RandomAccessibleInterval<? extends RealType<?>> 
 		getPlane(ImageDisplay display, 
 				RandomAccessibleInterval<? extends RealType<?>> data,
-				OverlayService overlayService) throws PluginException {
+				OverlayService overlayService) throws ModuleException {
 		DataView view = display.getActiveView();
 		if ((view == null) || !(view instanceof DatasetView)) {
-			throw new PluginException("The display doesn't have an active dataset (image)");
+			throw new ModuleException("The display doesn't have an active dataset (image)");
 		}
 		DatasetView dsView = (DatasetView)view;
 		/*

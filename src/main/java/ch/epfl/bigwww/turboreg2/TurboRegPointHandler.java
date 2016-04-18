@@ -1,105 +1,118 @@
 package ch.epfl.bigwww.turboreg2;
 
 import java.util.HashMap;
-import java.util.Set;
 
-import imagej.data.table.DoubleColumn;
-import imagej.data.table.ResultsTable;
-import imagej.util.ColorRGB;
-import imagej.util.Colors;
-import net.imglib2.Point;
+import net.imagej.table.DoubleColumn;
+import net.imagej.table.ResultsTable;
+import org.scijava.util.ColorRGB;
+import org.scijava.util.Colors;
 import net.imglib2.RealPoint;
 
-/*********************************************************************
+/**
+ * *******************************************************************
  * @author Philippe Thevenaz
  * @author Lee Kamentsky
- * 
- * This class implements the graphic interactions when dealing with
- * landmarks.
- * 
+ *
+ * This class implements the graphic interactions when dealing with landmarks.
+ *
  * TODO: Implement ImageJ 2.0 drawing
- ********************************************************************/
-class TurboRegPointHandler
-{ /* begin class turboRegPointHandler */
+ *******************************************************************
+ */
+class TurboRegPointHandler {
 
-	/*....................................................................
+    /* begin class turboRegPointHandler */
+
+ /*....................................................................
 	Public variables
 	....................................................................*/
 
-	/**
-	 * The name of the X coordinate table column for the source image
-	 */
-	public static final String SOURCE_X = "sourceX";
-	/**
-	 * The name of the Y coordinate table column for the source image
-	 */
-	public static final String SOURCE_Y = "sourceY";
-	/**
-	 * The name of the X coordinate table column for the target image
-	 */
-	public static final String TARGET_X = "targetX";
-	/**
-	 * The name of the Y coordinate table column for the target image
-	 */
-	public static final String TARGET_Y = "targetY";
-	/*********************************************************************
-	The magnifying tool is set in eleventh position to be coherent with
-	ImageJ.
-	 ********************************************************************/
-	public static final int MAGNIFIER = 11;
+    /**
+     * The name of the X coordinate table column for the source image
+     */
+    public static final String SOURCE_X = "sourceX";
+    /**
+     * The name of the Y coordinate table column for the source image
+     */
+    public static final String SOURCE_Y = "sourceY";
+    /**
+     * The name of the X coordinate table column for the target image
+     */
+    public static final String TARGET_X = "targetX";
+    /**
+     * The name of the Y coordinate table column for the target image
+     */
+    public static final String TARGET_Y = "targetY";
+    /**
+     * *******************************************************************
+     * The magnifying tool is set in eleventh position to be coherent with ImageJ.
+	 *******************************************************************
+     */
+    public static final int MAGNIFIER = 11;
 
-	/*********************************************************************
-	The moving tool is set in second position to be coherent with the
-	<code>PointPicker_</code> plugin.
-	 ********************************************************************/
-	public static final int MOVE_CROSS = 1;
+    /**
+     * *******************************************************************
+     * The moving tool is set in second position to be coherent with the
+     * <code>PointPicker_</code> plugin.
+	 *******************************************************************
+     */
+    public static final int MOVE_CROSS = 1;
 
-	/*********************************************************************
-	The number of points we are willing to deal with is at most
-	<code>4</code>.
-	@see turboRegDialog#transformation
-	 ********************************************************************/
-	public static final int NUM_POINTS = 4;
+    /**
+     * *******************************************************************
+     * The number of points we are willing to deal with is at most
+     * <code>4</code>.
+     *
+     * @see turboRegDialog#transformation
+	 *******************************************************************
+     */
+    public static final int NUM_POINTS = 4;
 
-	/*....................................................................
+    /*....................................................................
 	Private variables
 	....................................................................*/
+    /**
+     * *******************************************************************
+     * The drawn landmarks fit in a 11x11 matrix.
+	 *******************************************************************
+     */
+    private static final int CROSS_HALFSIZE = 5;
 
-	/*********************************************************************
-	The drawn landmarks fit in a 11x11 matrix.
-	 ********************************************************************/
-	private static final int CROSS_HALFSIZE = 5;
+    /**
+     * *******************************************************************
+     * The golden ratio mathematical constant determines where to put the initial landmarks.
+	 *******************************************************************
+     */
+    private static final double GOLDEN_RATIO = 0.5 * (Math.sqrt(5.0) - 1.0);
 
-	/*********************************************************************
-	The golden ratio mathematical constant determines where to put the
-	initial landmarks.
-	 ********************************************************************/
-	private static final double GOLDEN_RATIO = 0.5 * (Math.sqrt(5.0) - 1.0);
+    private final ColorRGB[] spectrum = new ColorRGB[NUM_POINTS];
+    private double[][] precisionPoint;
+    private TransformationType transformation;
+    final private TurboRegImage interval;
+    private int currentPoint = 0;
+    private boolean interactive = true;
+    private boolean started = false;
+    final private double xOffset;
+    final private double yOffset;
 
-	private final ColorRGB[] spectrum = new ColorRGB[NUM_POINTS];
-	private double[][] precisionPoint;
-	private TransformationType transformation;
-	final private TurboRegImage interval;
-	private int currentPoint = 0;
-	private boolean interactive = true;
-	private boolean started = false;
-	final private double xOffset;
-	final private double yOffset;
-
-	/*....................................................................
+    /*....................................................................
 	Public methods
 	....................................................................*/
-	public TurboRegPointHandler(TransformationType transformation, TurboRegImage interval) {
-		this.transformation = transformation;
-		precisionPoint = new double [pointCount(transformation)][2];
-		this.interval = interval;
-		xOffset = 0;
-		yOffset = 0;
-	}
-/*	*//*********************************************************************
-	Draw the landmarks. Outline the current point if the window has focus.
-	@param g Graphics environment.
-	 ********************************************************************//*
+    public TurboRegPointHandler(TransformationType transformation, TurboRegImage interval) {
+        this.transformation = transformation;
+        precisionPoint = new double[pointCount(transformation)][2];
+        this.interval = interval;
+        xOffset = 0;
+        yOffset = 0;
+    }
+
+    /*	*/
+    /**
+     * *******************************************************************
+     * Draw the landmarks. Outline the current point if the window has focus.
+     *
+     * @param g Graphics environment.
+	 *******************************************************************
+     *//*
 	public void draw (
 			final Graphics g
 	) {
@@ -327,12 +340,16 @@ class TurboRegPointHandler
 			}
 		}
 	}  end draw 
-*/
-/*	*//*********************************************************************
-Set the current point as that which is closest to (x, y).
-@param x Horizontal coordinate in canvas units.
-@param y Vertical coordinate in canvas units.
-	 ********************************************************************//*
+     */
+ /*	*/
+    /**
+     * *******************************************************************
+     * Set the current point as that which is closest to (x, y).
+     *
+     * @param x Horizontal coordinate in canvas units.
+     * @param y Vertical coordinate in canvas units.
+	 *******************************************************************
+     *//*
 	public int findClosest (
 			int x,
 			int y
@@ -370,224 +387,260 @@ Set the current point as that which is closest to (x, y).
 		return(currentPoint);
 	}  end findClosest 
 
-*/	
-	/*********************************************************************
-	Return the current point as a <code>Point</code> object.
-	 ********************************************************************/
-	public RealPoint getPoint (
-	) {
-		return new RealPoint(precisionPoint[currentPoint][0], 
-							 precisionPoint[currentPoint][1]);
-	} /* end getPoint */
+     */
+    /**
+     * *******************************************************************
+     * Return the current point as a <code>Point</code> object.
+	 *******************************************************************
+     */
+    public RealPoint getPoint() {
+        return new RealPoint(precisionPoint[currentPoint][0],
+                precisionPoint[currentPoint][1]);
+    }
 
-	/**
-	 * Return the number of points for the given transformation
-	 * @param t transformation type in question
-	 * @return number of points needed to constrain the transformation
-	 */
-	static public int pointCount(TransformationType t) {
-		switch(t) {
-		case TRANSLATION: return 1;
-		case RIGID_BODY: return 3;
-		case SCALED_ROTATION: return 2;
-		case AFFINE: return 3;
-		case BILINEAR: return 4;
-		}
-		return 0;
-	}
-	/*********************************************************************
-	Return all landmarks as an array <code>double[transformation / 2][2]</code>,
-	except for a rigid-body transformation for which the array has size
-	<code>double[3][2]</code>.
-	 ********************************************************************/
-	public double[][] getPoints (
-	) {
-		return(precisionPoint);
-	} /* end getPoints */
+    /* end getPoint */
 
-	/*********************************************************************
-	Modify the location of the current point. Clip the admissible range
-	to the image size.
-	@param x Desired new horizontal coordinate in pixel units.
-	@param y Desired new vertical coordinate in pixel units.
-	 ********************************************************************/
-	public void movePoint (
-			double x,
-			double y
-	) {
-		interactive = true;
-		x = interval.clipX(x);
-		y = interval.clipY(y);
-		if ((transformation == TransformationType.RIGID_BODY) && (currentPoint != 0)) {
-			double [] other = precisionPoint[3-currentPoint];
-			if (0.5 * Math.sqrt((other[0]-x)*(other[0]-x) + (other[1]-y)*(other[1]-y)) <= CROSS_HALFSIZE) {
-				return;
-			}
-		}
-		precisionPoint[currentPoint][0] = x;
-		precisionPoint[currentPoint][1] = y;
-	} /* end movePoint */
+    /**
+     * Return the number of points for the given transformation
+     *
+     * @param t transformation type in question
+     * @return number of points needed to constrain the transformation
+     */
+    static public int pointCount(TransformationType t) {
+        switch (t) {
+            case TRANSLATION:
+                return 1;
+            case RIGID_BODY:
+                return 3;
+            case SCALED_ROTATION:
+                return 2;
+            case AFFINE:
+                return 3;
+            case BILINEAR:
+                return 4;
+        }
+        return 0;
+    }
 
-	/*********************************************************************
-	* Set a new current point.
-	* @param currentPoint New current point index.
-	 ********************************************************************/
-	public void setCurrentPoint (
-			final int currentPoint
-	) {
-		this.currentPoint = currentPoint;
-	} /* end setCurrentPoint */
+    /**
+     * *******************************************************************
+     * Return all landmarks as an array <code>double[transformation / 2][2]</code>, except for a
+     * rigid-body transformation for which the array has size
+     * <code>double[3][2]</code>.
+	 *******************************************************************
+     */
+    public double[][] getPoints() {
+        return (precisionPoint);
+    }
 
-	/*********************************************************************
-	 * Set new position for all landmarks, without clipping.
-	 * @param precisionPoint New coordinates in canvas units.
-	 ********************************************************************/
-	public void setPoints (
-			final double[][] precisionPoint
-	) {
-		interactive = false;
-		for (int i=0; i<precisionPoint.length; i++) {
-			this.precisionPoint[i][0] = precisionPoint[i][0];
-			this.precisionPoint[i][1] = precisionPoint[i][1];
-		}
-	} /* end setPoints */
+    /* end getPoints */
 
-	/*********************************************************************
-	 * Reset the landmarks to their initial position for the given
-	 * transformation.
-	 * @param transformation Transformation code.
-	 ********************************************************************/
-	public void setTransformation (
-			final TransformationType transformation
-	) {
-		interactive = true;
-		this.transformation = transformation;
-		final int width = interval.getWidth();
-		final int height = interval.getHeight();
-		final double xMid = 0.5 * (double)width;
-		final double yMid = 0.5 * (double)height;
-		final double xMin = 0.25 * GOLDEN_RATIO * (double)width;
-		final double yMin = 0.25 * GOLDEN_RATIO * (double)height;
-		final double xMax = (double)width - 0.25 * GOLDEN_RATIO * (double)width;
-		final double yMax = (double)height - 0.25 * GOLDEN_RATIO * (double)height;
-		currentPoint = 0;
-		switch (transformation) {
-		case TRANSLATION: {
-			precisionPoint = new double [][] {{xMid, yMid}};
-			break;
-		}
-		case RIGID_BODY: {
-			precisionPoint = new double [][] { { xMid, yMid}, {xMid, yMin}, {xMid, yMax}};
-			break;
-		}
-		case SCALED_ROTATION: {
-			precisionPoint = new double [][] { {xMin, yMid}, {xMax, yMid} };
-			break;
-		}
-		case AFFINE: {
-			precisionPoint = new double [][] { { xMid, yMin}, {xMin, yMax}, {xMax, yMax} };
-			break;
-		}
-		case BILINEAR: {
-			precisionPoint = new double[][] { { xMin, yMin }, { xMin, yMax}, {xMax, yMin}, {xMax, yMax}};
-			break;
-		}
-		}
-		setSpectrum();
-	} /* end setTransformation */
+    /**
+     * *******************************************************************
+     * Modify the location of the current point. Clip the admissible range to the image size.
+     *
+     * @param x Desired new horizontal coordinate in pixel units.
+     * @param y Desired new vertical coordinate in pixel units.
+	 *******************************************************************
+     */
+    public void movePoint(
+            double x,
+            double y
+    ) {
+        interactive = true;
+        x = interval.clipX(x);
+        y = interval.clipY(y);
+        if ((transformation == TransformationType.RIGID_BODY) && (currentPoint != 0)) {
+            double[] other = precisionPoint[3 - currentPoint];
+            if (0.5 * Math.sqrt((other[0] - x) * (other[0] - x) + (other[1] - y) * (other[1] - y)) <= CROSS_HALFSIZE) {
+                return;
+            }
+        }
+        precisionPoint[currentPoint][0] = x;
+        precisionPoint[currentPoint][1] = y;
+    }
 
-	/**
-	 * Initialize using an external point array.
-	 * 
-	 * @param precisionPoint array of landmark points
-	 * @param transformation transformation to be applied
-	 * @param xOffset x offset from the origin of the cropped region
-	 * @param yOffset y offset from the origin of the cropped region
-	 */
-	public TurboRegPointHandler (
-			final double[][] precisionPoint,
-			final TransformationType transformation,
-			double xOffset,
-			double yOffset
-	) {
-		this.transformation = transformation;
-		this.precisionPoint = precisionPoint;
-		this.interval = null;
-		interactive = false;
-		this.xOffset = xOffset;
-		this.yOffset = yOffset;
-	} /* end turboRegPointHandler */
+    /* end movePoint */
 
-	/**
-	 * Initialize using point values in a results table
-	 * @param transformation the transformation type
-	 * @param resultsTable a results table containing the coordinates.
-	 *                     We look for either columns of sourceX and sourceY
-	 *                     or targetX and targetY.
-	 * @param isTarget determines whether to use source or target points.
-	 */
-	public TurboRegPointHandler (
-			TransformationType transformation, 
-			ResultsTable resultsTable,
-			TurboRegImage interval){
-		final boolean isTarget = interval.isTarget();
-		final int nPoints = pointCount(transformation);
-		this.transformation = transformation;
-		this.precisionPoint = new double[nPoints][2];
-		this.interval = interval;
-		xOffset = interval.xOffset;
-		yOffset = interval.yOffset;
-		double [] offset = { xOffset, yOffset };
-		if (resultsTable == null) {
-			setTransformation(transformation);
-			return;
-		}
-		HashMap<String, DoubleColumn> columnMap = new HashMap<String, DoubleColumn>();
-		for (int i=0; i<resultsTable.getColumnCount(); i++) {
-			columnMap.put(resultsTable.getColumnHeader(i), resultsTable.get(i));
-		}
-		String [] columnNames = isTarget? new String [] { TARGET_X, TARGET_Y}: new String [] {SOURCE_X, SOURCE_Y};
-		if ((resultsTable == null) || 
-			(resultsTable.getRowCount() != nPoints) ||
-			(! columnMap.containsKey(columnNames[0])) || 
-			(! columnMap.containsKey(columnNames[1]))){
-			setTransformation(transformation);
-		} else {
-			for (int j=0; j<2; j++) {
-				final DoubleColumn c = resultsTable.get(columnNames[j]);
-				for (int i=0; i<precisionPoint.length; i++) {
-					Double value = c.get(i);
-					if (value != null) precisionPoint[i][j] = value - offset[j];
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Fill the results table with the points in the handler
-	 * 
-	 * @param resultsTable put stuff in this results table
-	 * @param interval the image b
-	 * @param isTarget true to use target point names, false to use source
-	 */
-	public void getResults(ResultsTable resultsTable) {
-		String [] columnNames = interval.isTarget()? 
-				new String [] { TARGET_X, TARGET_Y}: new String [] {SOURCE_X, SOURCE_Y};
-		double [] offset = { xOffset, yOffset };
-		resultsTable.setRowCount(TurboRegPointHandler.pointCount(transformation));
-		for (int j=0; j<2; j++) {
-			DoubleColumn c = resultsTable.get(columnNames[j]);
-			for (int i=0; i<precisionPoint.length; i++) {
-				c.set(i, precisionPoint[i][j] + offset[j]);
-			}
-		}
-	}
-	/*....................................................................
+    /**
+     * *******************************************************************
+     * Set a new current point.
+     *
+     * @param currentPoint New current point index.
+	 *******************************************************************
+     */
+    public void setCurrentPoint(
+            final int currentPoint
+    ) {
+        this.currentPoint = currentPoint;
+    }
+
+    /* end setCurrentPoint */
+
+    /**
+     * *******************************************************************
+     * Set new position for all landmarks, without clipping.
+     *
+     * @param precisionPoint New coordinates in canvas units.
+	 *******************************************************************
+     */
+    public void setPoints(
+            final double[][] precisionPoint
+    ) {
+        interactive = false;
+        for (int i = 0; i < precisionPoint.length; i++) {
+            this.precisionPoint[i][0] = precisionPoint[i][0];
+            this.precisionPoint[i][1] = precisionPoint[i][1];
+        }
+    }
+
+    /* end setPoints */
+
+    /**
+     * *******************************************************************
+     * Reset the landmarks to their initial position for the given transformation.
+     *
+     * @param transformation Transformation code.
+	 *******************************************************************
+     */
+    public void setTransformation(
+            final TransformationType transformation
+    ) {
+        interactive = true;
+        this.transformation = transformation;
+        final int width = interval.getWidth();
+        final int height = interval.getHeight();
+        final double xMid = 0.5 * (double) width;
+        final double yMid = 0.5 * (double) height;
+        final double xMin = 0.25 * GOLDEN_RATIO * (double) width;
+        final double yMin = 0.25 * GOLDEN_RATIO * (double) height;
+        final double xMax = (double) width - 0.25 * GOLDEN_RATIO * (double) width;
+        final double yMax = (double) height - 0.25 * GOLDEN_RATIO * (double) height;
+        currentPoint = 0;
+        switch (transformation) {
+            case TRANSLATION: {
+                precisionPoint = new double[][]{{xMid, yMid}};
+                break;
+            }
+            case RIGID_BODY: {
+                precisionPoint = new double[][]{{xMid, yMid}, {xMid, yMin}, {xMid, yMax}};
+                break;
+            }
+            case SCALED_ROTATION: {
+                precisionPoint = new double[][]{{xMin, yMid}, {xMax, yMid}};
+                break;
+            }
+            case AFFINE: {
+                precisionPoint = new double[][]{{xMid, yMin}, {xMin, yMax}, {xMax, yMax}};
+                break;
+            }
+            case BILINEAR: {
+                precisionPoint = new double[][]{{xMin, yMin}, {xMin, yMax}, {xMax, yMin}, {xMax, yMax}};
+                break;
+            }
+        }
+        setSpectrum();
+    }
+
+    /* end setTransformation */
+
+    /**
+     * Initialize using an external point array.
+     *
+     * @param precisionPoint array of landmark points
+     * @param transformation transformation to be applied
+     * @param xOffset x offset from the origin of the cropped region
+     * @param yOffset y offset from the origin of the cropped region
+     */
+    public TurboRegPointHandler(
+            final double[][] precisionPoint,
+            final TransformationType transformation,
+            double xOffset,
+            double yOffset
+    ) {
+        this.transformation = transformation;
+        this.precisionPoint = precisionPoint;
+        this.interval = null;
+        interactive = false;
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
+    }
+
+    /* end turboRegPointHandler */
+
+    /**
+     * Initialize using point values in a results table
+     *
+     * @param transformation the transformation type
+     * @param resultsTable a results table containing the coordinates. We look for either columns of
+     * sourceX and sourceY or targetX and targetY.
+     * @param isTarget determines whether to use source or target points.
+     */
+    public TurboRegPointHandler(
+            TransformationType transformation,
+            ResultsTable resultsTable,
+            TurboRegImage interval) {
+        final boolean isTarget = interval.isTarget();
+        final int nPoints = pointCount(transformation);
+        this.transformation = transformation;
+        this.precisionPoint = new double[nPoints][2];
+        this.interval = interval;
+        xOffset = interval.xOffset;
+        yOffset = interval.yOffset;
+        double[] offset = {xOffset, yOffset};
+        if (resultsTable == null) {
+            setTransformation(transformation);
+            return;
+        }
+        HashMap<String, DoubleColumn> columnMap = new HashMap<String, DoubleColumn>();
+        for (int i = 0; i < resultsTable.getColumnCount(); i++) {
+            columnMap.put(resultsTable.getColumnHeader(i), resultsTable.get(i));
+        }
+        String[] columnNames = isTarget ? new String[]{TARGET_X, TARGET_Y} : new String[]{SOURCE_X, SOURCE_Y};
+        if ((resultsTable == null)
+                || (resultsTable.getRowCount() != nPoints)
+                || (!columnMap.containsKey(columnNames[0]))
+                || (!columnMap.containsKey(columnNames[1]))) {
+            setTransformation(transformation);
+        } else {
+            for (int j = 0; j < 2; j++) {
+                final DoubleColumn c = resultsTable.get(columnNames[j]);
+                for (int i = 0; i < precisionPoint.length; i++) {
+                    Double value = c.get(i);
+                    if (value != null) {
+                        precisionPoint[i][j] = value - offset[j];
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Fill the results table with the points in the handler
+     *
+     * @param resultsTable put stuff in this results table
+     * @param interval the image b
+     * @param isTarget true to use target point names, false to use source
+     */
+    public void getResults(ResultsTable resultsTable) {
+        String[] columnNames = interval.isTarget()
+                ? new String[]{TARGET_X, TARGET_Y} : new String[]{SOURCE_X, SOURCE_Y};
+        double[] offset = {xOffset, yOffset};
+        resultsTable.setRowCount(TurboRegPointHandler.pointCount(transformation));
+        for (int j = 0; j < 2; j++) {
+            DoubleColumn c = resultsTable.get(columnNames[j]);
+            for (int i = 0; i < precisionPoint.length; i++) {
+                c.set(i, precisionPoint[i][j] + offset[j]);
+            }
+        }
+    }
+
+    /*....................................................................
 	Private methods
 ....................................................................*/
 
-	/*------------------------------------------------------------------*/
-/*	private void drawArcs (
+ /*------------------------------------------------------------------*/
+ /*	private void drawArcs (
 			final Graphics g
 	) {
 		final double mag = ic.getMagnification();
@@ -672,21 +725,20 @@ Set the current point as that which is closest to (x, y).
 									mag * (double)ic.getSrcRect().height - 1.0) + dy);
 		}
 	}  end drawHorizon 
-*/
-	/*------------------------------------------------------------------*/
-	private void setSpectrum (
-	) {
-		if (transformation == TransformationType.RIGID_BODY) {
-			spectrum[0] = Colors.GREEN;
-			spectrum[1] = new ColorRGB(16, 119, 169);
-			spectrum[2] = new ColorRGB(119, 85, 51);
-		}
-		else {
-			spectrum[0] = Colors.GREEN;
-			spectrum[1] = Colors.YELLOW;
-			spectrum[2] = Colors.MAGENTA;
-			spectrum[3] = Colors.CYAN;
-		}
-	} /* end setSpectrum */
+     */
+ /*------------------------------------------------------------------*/
+    private void setSpectrum() {
+        if (transformation == TransformationType.RIGID_BODY) {
+            spectrum[0] = Colors.GREEN;
+            spectrum[1] = new ColorRGB(16, 119, 169);
+            spectrum[2] = new ColorRGB(119, 85, 51);
+        } else {
+            spectrum[0] = Colors.GREEN;
+            spectrum[1] = Colors.YELLOW;
+            spectrum[2] = Colors.MAGENTA;
+            spectrum[3] = Colors.CYAN;
+        }
+    }
+    /* end setSpectrum */
 
 }

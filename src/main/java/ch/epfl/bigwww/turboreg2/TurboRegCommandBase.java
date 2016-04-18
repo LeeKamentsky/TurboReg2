@@ -6,13 +6,13 @@ import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.thread.ThreadService;
 
-import imagej.command.ContextCommand;
-import imagej.data.table.DefaultResultsTable;
-import imagej.data.table.ResultsTable;
-import imagej.data.table.Table;
-import imagej.data.table.TableDisplay;
-import imagej.display.Display;
-import imagej.display.DisplayService;
+import org.scijava.command.ContextCommand;
+import net.imagej.table.DefaultResultsTable;
+import net.imagej.table.ResultsTable;
+import net.imagej.table.Table;
+import net.imagej.table.TableDisplay;
+import org.scijava.display.Display;
+import org.scijava.display.DisplayService;
 
 /**
  * @author Philippe Thevenaz

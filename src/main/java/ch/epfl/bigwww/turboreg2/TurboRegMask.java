@@ -3,17 +3,16 @@
  */
 package ch.epfl.bigwww.turboreg2;
 
-import imagej.data.display.ImageDisplay;
-import imagej.data.display.OverlayService;
-import imagej.data.overlay.Overlay;
-import imagej.plugin.PluginException;
-import imagej.util.RealRect;
+import net.imagej.display.ImageDisplay;
+import net.imagej.display.OverlayService;
+import net.imagej.overlay.Overlay;
+import org.scijava.module.ModuleException;
+import org.scijava.util.RealRect;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.imglib2.Cursor;
-import net.imglib2.FinalInterval;
 import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.array.ArrayImg;
@@ -21,7 +20,6 @@ import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.basictypeaccess.array.FloatArray;
 import net.imglib2.roi.IterableRegionOfInterest;
 import net.imglib2.roi.RegionOfInterest;
-import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 
@@ -87,12 +85,12 @@ Return the full-size mask array.
 	Converts the pixel array of the incoming <code>ImageDisplay</code>
 	object into a local <code>boolean</code> array.
 	@param imp <code>ImagePlus</code> object to preprocess.
-	 * @throws PluginException 
+	 * @throws ModuleException 
 	 ********************************************************************/
 	public void setData (
 			final ImageDisplay display,
 			OverlayService overlayService
-	) throws PluginException {
+	) throws ModuleException {
 		RealRect bounds = overlayService.getSelectionBounds(display);
 		width = (int) bounds.width + 1;
 		height = (int) bounds.height + 1;

@@ -10,7 +10,7 @@ import java.util.Stack;
 
 import org.scijava.app.StatusService;
 
-import net.imglib2.img.ImgPlus;
+import net.imagej.ImgPlus;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.type.numeric.real.FloatType;
 
