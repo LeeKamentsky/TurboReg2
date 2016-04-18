@@ -36,7 +36,7 @@
             <groupId>net.imagej</groupId>
             <artifactId>ij</artifactId>
         </dependency>
-        <!--        <dependency>
+        <!--                <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-legacy</artifactId>
             <scope>runtime</scope>
@@ -46,14 +46,10 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <packageName>net.imagej</packageName>
-                            <mainClass>${main-class}</mainClass>
-                        </manifest>
-                    </archive>
+                    <mainClass>TurboRegCommandBase</mainClass>
                 </configuration>
             </plugin>
         </plugins>

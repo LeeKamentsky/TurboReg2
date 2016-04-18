@@ -14,13 +14,15 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 import org.scijava.command.Command;
+import org.scijava.log.LogService;
+import org.scijava.menu.MenuConstants;
+import org.scijava.module.ModuleException;
+
 import net.imagej.display.ImageDisplay;
 import net.imagej.display.OverlayService;
 import net.imagej.overlay.Overlay;
 import net.imagej.overlay.PointOverlay;
 import net.imagej.table.TableDisplay;
-import org.scijava.menu.MenuConstants;
-import org.scijava.module.ModuleException;
 
 /**
  * @author Philippe Thevenaz
@@ -41,6 +43,9 @@ public class TurboRegRegister extends TurboRegCommandBase {
     @Parameter
     OverlayService overlayService;
 
+    @Parameter
+    LogService log;
+
     @Parameter(type = ItemIO.INPUT, label = "Source",
             description = "Use this display as a reference for aligning the target image.",
             required = true)
@@ -53,7 +58,7 @@ public class TurboRegRegister extends TurboRegCommandBase {
             description = "The alignment between the source and target.\n"
             + "If an alignment is input, it is used to seed the initial conditions.\n")
     protected TableDisplay alignment;
-    
+
     @Parameter(type = ItemIO.INPUT, label = "Add landmarks to images",
             description = "Check this option to draw the landmark points on the source and target images")
     private boolean addLandmarks;
