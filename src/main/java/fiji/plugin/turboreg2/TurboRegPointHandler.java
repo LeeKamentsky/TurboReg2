@@ -16,7 +16,7 @@ import net.imglib2.RealPoint;
  * This class implements the graphic interactions when dealing with landmarks.
  *
  * TODO: Implement ImageJ 2.0 drawing
- *******************************************************************
+ * ******************************************************************
  */
 class TurboRegPointHandler {
 
@@ -25,7 +25,6 @@ class TurboRegPointHandler {
  /*....................................................................
 	Public variables
 	....................................................................*/
-
     /**
      * The name of the X coordinate table column for the source image
      */
@@ -45,25 +44,23 @@ class TurboRegPointHandler {
     /**
      * *******************************************************************
      * The magnifying tool is set in eleventh position to be coherent with ImageJ.
-	 *******************************************************************
+     * ******************************************************************
      */
     public static final int MAGNIFIER = 11;
 
     /**
      * *******************************************************************
-     * The moving tool is set in second position to be coherent with the
-     * <code>PointPicker_</code> plugin.
-	 *******************************************************************
+     * The moving tool is set in second position to be coherent with the <code>PointPicker_</code>
+     * plugin. ******************************************************************
      */
     public static final int MOVE_CROSS = 1;
 
     /**
      * *******************************************************************
-     * The number of points we are willing to deal with is at most
-     * <code>4</code>.
+     * The number of points we are willing to deal with is at most <code>4</code>.
      *
      * @see turboRegDialog#transformation
-	 *******************************************************************
+     * ******************************************************************
      */
     public static final int NUM_POINTS = 4;
 
@@ -73,14 +70,14 @@ class TurboRegPointHandler {
     /**
      * *******************************************************************
      * The drawn landmarks fit in a 11x11 matrix.
-	 *******************************************************************
+     * ******************************************************************
      */
     private static final int CROSS_HALFSIZE = 5;
 
     /**
      * *******************************************************************
      * The golden ratio mathematical constant determines where to put the initial landmarks.
-	 *******************************************************************
+     * ******************************************************************
      */
     private static final double GOLDEN_RATIO = 0.5 * (Math.sqrt(5.0) - 1.0);
 
@@ -111,7 +108,7 @@ class TurboRegPointHandler {
      * Draw the landmarks. Outline the current point if the window has focus.
      *
      * @param g Graphics environment.
-	 *******************************************************************
+     * ******************************************************************
      *//*
 	public void draw (
 			final Graphics g
@@ -348,7 +345,7 @@ class TurboRegPointHandler {
      *
      * @param x Horizontal coordinate in canvas units.
      * @param y Vertical coordinate in canvas units.
-	 *******************************************************************
+     * ******************************************************************
      *//*
 	public int findClosest (
 			int x,
@@ -391,7 +388,7 @@ class TurboRegPointHandler {
     /**
      * *******************************************************************
      * Return the current point as a <code>Point</code> object.
-	 *******************************************************************
+     * ******************************************************************
      */
     public RealPoint getPoint() {
         return new RealPoint(precisionPoint[currentPoint][0],
@@ -399,7 +396,6 @@ class TurboRegPointHandler {
     }
 
     /* end getPoint */
-
     /**
      * Return the number of points for the given transformation
      *
@@ -425,23 +421,21 @@ class TurboRegPointHandler {
     /**
      * *******************************************************************
      * Return all landmarks as an array <code>double[transformation / 2][2]</code>, except for a
-     * rigid-body transformation for which the array has size
-     * <code>double[3][2]</code>.
-	 *******************************************************************
+     * rigid-body transformation for which the array has size <code>double[3][2]</code>.
+     * ******************************************************************
      */
     public double[][] getPoints() {
         return (precisionPoint);
     }
 
     /* end getPoints */
-
     /**
      * *******************************************************************
      * Modify the location of the current point. Clip the admissible range to the image size.
      *
      * @param x Desired new horizontal coordinate in pixel units.
      * @param y Desired new vertical coordinate in pixel units.
-	 *******************************************************************
+     * ******************************************************************
      */
     public void movePoint(
             double x,
@@ -461,13 +455,12 @@ class TurboRegPointHandler {
     }
 
     /* end movePoint */
-
     /**
      * *******************************************************************
      * Set a new current point.
      *
      * @param currentPoint New current point index.
-	 *******************************************************************
+     * ******************************************************************
      */
     public void setCurrentPoint(
             final int currentPoint
@@ -476,13 +469,12 @@ class TurboRegPointHandler {
     }
 
     /* end setCurrentPoint */
-
     /**
      * *******************************************************************
      * Set new position for all landmarks, without clipping.
      *
      * @param precisionPoint New coordinates in canvas units.
-	 *******************************************************************
+     * ******************************************************************
      */
     public void setPoints(
             final double[][] precisionPoint
@@ -495,13 +487,12 @@ class TurboRegPointHandler {
     }
 
     /* end setPoints */
-
     /**
      * *******************************************************************
      * Reset the landmarks to their initial position for the given transformation.
      *
      * @param transformation Transformation code.
-	 *******************************************************************
+     * ******************************************************************
      */
     public void setTransformation(
             final TransformationType transformation
@@ -543,7 +534,6 @@ class TurboRegPointHandler {
     }
 
     /* end setTransformation */
-
     /**
      * Initialize using an external point array.
      *
@@ -567,7 +557,6 @@ class TurboRegPointHandler {
     }
 
     /* end turboRegPointHandler */
-
     /**
      * Initialize using point values in a results table
      *

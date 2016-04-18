@@ -130,8 +130,8 @@ public class TurboRegRegister extends TurboRegCommandBase {
             if (alignment == null) {
                 createResultsTable();
             }
-            sourcePh.getResults(getResultsTable());
-            targetPh.getResults(getResultsTable());
+            //sourcePh.getResults(getResultsTable());
+            //targetPh.getResults(getResultsTable());
             alignment.update();
             if (addLandmarks) {
                 TurboRegPointHandler[] ph = {sourcePh, targetPh};
